@@ -1,3 +1,4 @@
+// Страница отдельного товара
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -9,6 +10,7 @@ import { Store } from "../../utils/Store";
 export default function ProductScreen() {
   const { state, dispatch } = useContext(Store);
 
+  const router = useRouter();
   const { query } = useRouter();
   const { slug } = query;
   const product = data.products.find((x) => x.slug === slug);
@@ -16,6 +18,7 @@ export default function ProductScreen() {
     return <div>Товар не найден</div>;
   }
 
+  //Функция добавления товара в корзину
   const addToCartHandler = () => {
     const existItem = state.cart.cartItems.find((x) => x.slug === product.slug); //соотносим продукт с добавленным в корзину
     const quantity = existItem ? existItem.quantity + 1 : 1; //увеличиваем значение в красном кружке при повторном нажатии
@@ -27,6 +30,9 @@ export default function ProductScreen() {
     }
 
     dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
+
+    //после нажатия на кнопку добавить в корзину, автоматический переход на страницу Корзина
+    router.push("/cart");
   };
 
   return (

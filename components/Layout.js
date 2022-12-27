@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Store } from "../utils/Store";
 
 export default function Layout({ title, children }) {
-  const { state, dispatch } = useContext(Store);
+  const { state } = useContext(Store);
   const { cart } = state;
   return (
     <>
@@ -23,12 +23,12 @@ export default function Layout({ title, children }) {
               Интернет-магазин
             </Link>
             <div>
-              <Link href='/card' className='p-2'>
+              <Link href='/cart' className='p-2'>
                 Товары
                 {cart.cartItems.length > 0 && (
                   <span className='ml-1 rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white'>
                     {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-                    {/*Добавляем значение количества товаров в красном кружке в Хедере */}
+                    {/*Отборажение количества товаров в красном кружке в Хедере */}
                   </span>
                 )}
               </Link>
