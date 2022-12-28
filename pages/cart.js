@@ -6,8 +6,9 @@ import { XCircleIcon } from "@heroicons/react/outline";
 import Layout from "../components/Layout";
 import { Store } from "../utils/Store";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 
-export default function CardScreen() {
+function CartScreen() {
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const {
@@ -17,6 +18,12 @@ export default function CardScreen() {
   //Функция удаления товара из Корзины
   const removeItemHadler = (item) => {
     dispatch({ type: "CART_REMOVE_ITEM", payload: item });
+  };
+
+  //Функция изменения количества товара
+  const updateCartHandler = (item, qty) => {
+    const quantity = Number(qty);
+    dispatch({ type: "CART_ADD_ITEM", payload: { ...item, quantity } });
   };
 
   return (
@@ -56,8 +63,23 @@ export default function CardScreen() {
                         {item.name}
                       </Link>
                     </td>
-                    <td className='p-5 text-right'>{item.quantity}</td>
-                    <td className='p-5 text-right'>{item.price}</td>
+                    <td className='p-5 text-right'>
+                      {/*Изменение количества товара*/}
+                      <select
+                        value={item.quantity}
+                        onChange={(e) =>
+                          updateCartHandler(item, e.target.value)
+                        }
+                      >
+                        {/*Создание массива со значениями из остатков товара*/}
+                        {[...Array(item.countInStock).keys()].map((x) => (
+                          <option key={x + 1} value={x + 1}>
+                            {x + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className='p-5 text-right'>{item.price} ₽</td>
                     <td className='p-5 text-center'>
                       <button onClick={() => removeItemHadler(item)}>
                         <XCircleIcon className='h-5 w-5'></XCircleIcon>
@@ -92,3 +114,7 @@ export default function CardScreen() {
     </Layout>
   );
 }
+
+// Отключение динамического рендера на стороне сервера. Странице Корзина это не к чему,
+//так же решается проблема Cookies и товаров там
+export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });

@@ -1,11 +1,20 @@
-import React, { useContext } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import React, { useContext, useEffect, useState } from "react";
 import { Store } from "../utils/Store";
 
 export default function Layout({ title, children }) {
   const { state } = useContext(Store);
   const { cart } = state;
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+
+  // Все товары из корзины добавленны в Cookies и при рендере страниц с Layout выходит ошибка,
+  // так как Cookies прогружаются после js на странице. Для избежания этого добавляем useEffect,
+  // который добавляет товары из Cookies в стейт, а он далее, после рендера js отображаются в красном кружке у Корзины
+  useEffect(() => {
+    setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantity, 0));
+  }, [cart.cartItems]);
+
   return (
     <>
       <Head>
@@ -25,10 +34,9 @@ export default function Layout({ title, children }) {
             <div>
               <Link href='/cart' className='p-2'>
                 Товары
-                {cart.cartItems.length > 0 && (
+                {cartItemsCount > 0 && (
                   <span className='ml-1 rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white'>
-                    {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-                    {/*Отборажение количества товаров в красном кружке в Хедере */}
+                    {cartItemsCount}
                   </span>
                 )}
               </Link>
