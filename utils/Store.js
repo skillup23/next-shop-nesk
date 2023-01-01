@@ -10,6 +10,20 @@ const initialState = {
     : { cartItems: [] },
 };
 
+// const ISSERVER = typeof window === "undefined";
+
+// function test(item) {
+//   if (!ISSERVER) {
+//     localStorage.getItem(item);
+//   }
+// }
+
+// const initialState = {
+//   cart: test("cart")
+//     ? JSON.parse(localStorage.getItem("cart"))
+//     : { cartItems: [] },
+// };
+
 function reducer(state, action) {
   switch (action.type) {
     case "CART_ADD_ITEM": {
@@ -17,11 +31,13 @@ function reducer(state, action) {
       const existItem = state.cart.cartItems.find(
         (item) => item.slug === newItem.slug
       );
+
       const cartItems = existItem
         ? state.cart.cartItems.map((item) =>
             item.name === existItem.name ? newItem : item
           )
         : [...state.cart.cartItems, newItem];
+
       // Добавление товаров в Cookies
       Cookies.set("cart", JSON.stringify({ ...state.cart, cartItems }));
       return { ...state, cart: { ...state.cart, cartItems } };

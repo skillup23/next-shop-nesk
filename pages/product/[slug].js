@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import React, { useContext } from "react";
 import Layout from "../../components/Layout";
 import data from "../../utils/data";
+// import data2 from "../../utils/data";
 import { Store } from "../../utils/Store";
 
 export default function ProductScreen() {
@@ -29,7 +30,17 @@ export default function ProductScreen() {
       return;
     }
 
-    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
+    //Удаление лишних свойтв для помещения товаров в куки
+    let productCart = {};
+    Object.assign(productCart, product);
+    Reflect.deleteProperty(productCart, "description");
+    Reflect.deleteProperty(productCart, "category");
+    Reflect.deleteProperty(productCart, "brand");
+    Reflect.deleteProperty(productCart, "power");
+    Reflect.deleteProperty(productCart, "connector");
+    Reflect.deleteProperty(productCart, "cableLength");
+
+    dispatch({ type: "CART_ADD_ITEM", payload: { ...productCart, quantity } });
 
     //после нажатия на кнопку добавить в корзину, автоматический переход на страницу Корзина
     router.push("/cart");
@@ -47,7 +58,7 @@ export default function ProductScreen() {
             alt={product.name}
             width={640}
             height={640}
-            responsive
+            priority
           ></Image>
         </div>
         <div>
@@ -60,7 +71,7 @@ export default function ProductScreen() {
             <li>Мощность зарядки: {product.power}</li>
             <li>Длина зарядного кабеля, м: {product.cableLength}</li>
             <li>Разъём: {product.connector}</li>
-            <li>Описание: {product.descriotion}</li>
+            <li>Описание: {product.description}</li>
           </ul>
         </div>
         <div>
