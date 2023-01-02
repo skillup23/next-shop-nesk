@@ -1,18 +1,34 @@
-//      Информация по товарам
-// name: имя товара
-// slug: путь страницы товара в браузере
-// article: артикл
-// category: категория
-// image: "путь к изображению
-// price: цена
-// brand: бренд
-// power: "мощность
-// cableLength: Длина зарядного кабеля
-// connector: Разъём
-// countInStock: количество товара на складе, при 0 - измениться описаните на карточке товара
-// descriotion: описание товара
+import bcrypt from "bcryptjs";
 
 const data = {
+  users: [
+    {
+      name: "Robert",
+      email: "are@ya.ru",
+      password: bcrypt.hashSync("12345678"),
+      isAdmin: true,
+    },
+    {
+      name: "Miron",
+      email: "miron@ya.ru",
+      password: bcrypt.hashSync("12345678"),
+      isAdmin: false,
+    },
+  ],
+
+  //      Информация по товарам
+  // name: имя товара
+  // slug: путь страницы товара в браузере
+  // article: артикл
+  // category: категория
+  // image: "путь к изображению
+  // price: цена
+  // brand: бренд
+  // power: "мощность
+  // cableLength: Длина зарядного кабеля
+  // connector: Разъём
+  // countInStock: количество товара на складе, при 0 - измениться описаните на карточке товара
+  // descriotion: описание товара
   products: [
     {
       name: "Orbis VIARIS UNI 22кВт T2",
