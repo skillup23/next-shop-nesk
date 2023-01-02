@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+//если данная модель существует в mogoose, то не создаем, иначе добавляем модель
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;
