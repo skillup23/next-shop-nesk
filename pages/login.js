@@ -44,7 +44,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <Layout title='Авторизация'>
+    <Layout title='Авторизация '>
       <form
         className='mx-auto max-w-screen-md'
         onSubmit={handleSubmit(submitHandler)}
