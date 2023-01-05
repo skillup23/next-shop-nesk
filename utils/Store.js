@@ -7,7 +7,7 @@ export const Store = createContext();
 const initialState = {
   cart: Cookies.get("cart")
     ? JSON.parse(Cookies.get("cart"))
-    : { cartItems: [] },
+    : { cartItems: [], shippingAddress: {} },
 };
 
 // const ISSERVER = typeof window === "undefined";
@@ -50,7 +50,7 @@ function reducer(state, action) {
       Cookies.set("cart", JSON.stringify({ ...state.cart, cartItems }));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
-    //сброс корзины товаров
+    //сброс корзины товаров, страницы доставки и платежной информации
     case "CART_RESET":
       return {
         ...state,
@@ -60,6 +60,19 @@ function reducer(state, action) {
           paymentMethod: "",
         },
       };
+    //сохраннение адреса доставки из формы на странице адреса отправки
+    case "SAVE_SHIPPING_ADDRESS":
+      return {
+        ...state,
+        card: {
+          ...state.cart,
+          shippingAddress: {
+            ...state.cart.shippingAddress,
+            ...action.payload,
+          },
+        },
+      };
+
     default:
       return state;
   }
