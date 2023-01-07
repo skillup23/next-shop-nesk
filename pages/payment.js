@@ -20,7 +20,7 @@ export default function PaymentScreen() {
     e.preventDefault();
     //если не выбран способ оплаты вывести попап
     if (!selectedPaymentMethod) {
-      return toast.error("Выберите способ оплаты");
+      return toast.error("Выберите способ оплаты", { autoClose: 2000 });
     }
     //отправка информации в заказ
     dispatch({ type: "SAVE_PAYMENT_METHOD", payload: selectedPaymentMethod });

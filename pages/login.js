@@ -36,7 +36,7 @@ export default function LoginScreen() {
       });
       if (result.error) {
         // фреймворк, показывающий простые самосворачиваемые попапы. Сработает при неверном логине пароле
-        toast.error(result.error);
+        toast.error(result.error, { autoClose: 2000 });
       }
     } catch (err) {
       toast.error(getError(err));

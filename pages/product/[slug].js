@@ -1,33 +1,36 @@
 // Страница отдельного товара
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext } from "react";
+import { toast } from "react-toastify";
 import Layout from "../../components/Layout";
-import data from "../../utils/data";
-// import data2 from "../../utils/data";
+import Product from "../../models/Product";
+import db from "../../utils/db";
 import { Store } from "../../utils/Store";
 
-export default function ProductScreen() {
+export default function ProductScreen(props) {
+  const { product } = props;
   const { state, dispatch } = useContext(Store);
 
   const router = useRouter();
-  const { query } = useRouter();
-  const { slug } = query;
-  const product = data.products.find((x) => x.slug === slug);
   if (!product) {
-    return <div>Товар не найден</div>;
+    return <Layout title='Товар не найден '>Товар не найден</Layout>;
   }
 
   //Функция добавления товара в корзину
-  const addToCartHandler = () => {
+  const addToCartHandler = async () => {
     const existItem = state.cart.cartItems.find((x) => x.slug === product.slug); //соотносим продукт с добавленным в корзину
     const quantity = existItem ? existItem.quantity + 1 : 1; //увеличиваем значение в красном кружке при повторном нажатии
+    //получаем товары из mongobd
+    const { data } = await axios.get(`/api/products/${product._id}`);
 
     //если количество товара закончилось, то предупредить пользователя об этом
-    if (product.countInStock < quantity) {
-      alert("Извините, данный товар законился.");
-      return;
+    if (data.countInStock < quantity) {
+      return toast.error("Извините, данный товар законился.", {
+        autoClose: 2000,
+      });
     }
 
     //Удаление лишних свойтв для помещения товаров в куки
@@ -95,4 +98,18 @@ export default function ProductScreen() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { params } = context;
+  const { slug } = params;
+
+  await db.connect();
+  const product = await Product.findOne({ slug }).lean();
+  await db.disconnect();
+  return {
+    props: {
+      product: product ? db.convertDocToObj(product) : null,
+    },
+  };
 }
